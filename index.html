@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Schockanruf-Trainer</title>
+<style>
+  :root { --bg:#f6f4ee; --card:#fff; --fg:#1b2130; --dim:#535d70; --line:#d6d1c4; --accent:#14507a; --good:#0f6b3c; --goodbg:#e4f4ea; --bad:#9c1c25; --badbg:#fbe9ea; --call:#eef3f8; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12161d; --card:#1c222c; --fg:#f0f2f6; --dim:#a8b1c0; --line:#3a4350; --accent:#7fc0ee; --good:#6fd79b; --goodbg:#15301f; --bad:#ff9097; --badbg:#3a1a1d; --call:#222b38; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0 auto; padding: 24px 16px 72px; max-width: 760px; background: var(--bg); color: var(--fg);
+    font: 20px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 6px; }
+  h2 { font-size: 26px; margin: 40px 0 12px; }
+  h3 { font-size: 22px; margin: 0 0 4px; }
+  p { margin: 10px 0; }
+  a { color: var(--accent); }
+  .dim { color: var(--dim); font-size: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin: 14px 0; }
+  button { font: inherit; cursor: pointer; border-radius: 12px; padding: 14px 18px; border: 2px solid var(--accent); background: var(--accent); color: var(--bg); font-weight: 600; }
+  button.zweit { background: transparent; color: var(--accent); }
+  button.wahl { display: block; width: 100%; text-align: left; margin: 12px 0; background: var(--card); color: var(--fg); border-color: var(--line); font-weight: 500; }
+  button.wahl:hover:not(:disabled) { border-color: var(--accent); }
+  button.wahl:disabled { cursor: default; opacity: .75; }
+  button.wahl.richtig { border-color: var(--good); background: var(--goodbg); opacity: 1; }
+  button.wahl.falsch { border-color: var(--bad); background: var(--badbg); opacity: 1; }
+  :focus-visible { outline: 4px solid var(--accent); outline-offset: 3px; }
+  .anruf { background: var(--call); border-left: 6px solid var(--accent); border-radius: 0 12px 12px 0; padding: 16px 18px; margin: 14px 0; }
+  .urteil { font-weight: 700; }
+  .urteil.gut { color: var(--good); }
+  .urteil.schlecht { color: var(--bad); }
+  .knoepfe { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  ol.regeln { padding-left: 1.3em; }
+  ol.regeln li { margin: 10px 0; }
+  label { display: block; font-weight: 600; margin: 14px 0 4px; }
+  input { font: inherit; color: inherit; width: 100%; padding: 12px 14px; background: var(--card); border: 2px solid var(--dim); border-radius: 10px; }
+  .reihe { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+  @media (max-width: 520px) { .reihe { grid-template-columns: 1fr; } }
+  #karte { border: 3px solid var(--fg); }
+  #karte h3 { font-size: 26px; }
+  #karte table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  #karte td { border-top: 1px solid var(--line); padding: 8px 4px; font-size: 22px; }
+  @media print {
+    body > *:not(#karte) { display: none !important; }
+    body { background: #fff; color: #000; padding: 0; max-width: none; }
+    #karte { border: 3px solid #000; background: #fff; color: #000; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Schockanruf-Trainer</h1>
+<p class="dim">Üben Sie in Ruhe, was Sie tun, wenn Betrüger anrufen. Vier kurze Übungs-Anrufe, jeder dauert zwei Minuten.</p>
+
+<div class="card" role="note">
+  <p><strong>Das hier ist nur eine Übung.</strong> Niemand ruft Sie wirklich an, und nichts, was Sie eintippen, verlässt dieses Gerät.</p>
+  <p>Wenn Sie gerade einen verdächtigen Anruf bekommen haben: Legen Sie auf und wählen Sie selbst die <strong>110</strong>.</p>
+</div>
+
+<h2 id="ueben-titel">Übungs-Anrufe</h2>
+<div id="buehne" aria-live="polite"></div>
+
+<h2>Die sieben Regeln</h2>
+<ol class="regeln">
+  <li><strong>Auflegen ist erlaubt.</strong> Sobald Sie sich unter Druck gesetzt fühlen, beenden Sie das Gespräch.</li>
+  <li><strong>Die Polizei verlangt nie Geld oder Wertsachen</strong> und holt nie etwas zur „Verwahrung“ ab.</li>
+  <li><strong>Die Polizei ruft nie unter 110 an.</strong> Die Nummer im Display lässt sich fälschen.</li>
+  <li><strong>Selbst wählen.</strong> Nicht die Rückruftaste benutzen, sondern die 110 oder die bekannte Nummer eintippen.</li>
+  <li><strong>Nicht raten.</strong> Der Anrufer soll seinen Namen selbst sagen.</li>
+  <li><strong>Kennwort vereinbaren.</strong> Ein geheimes Wort, das nur die Familie kennt, entlarvt auch nachgemachte Stimmen.</li>
+  <li><strong>Nie etwas an Unbekannte übergeben.</strong> Und jeden solchen Anruf der Polizei melden, auch wenn nichts passiert ist.</li>
+</ol>
+
+<h2>Karte fürs Telefon</h2>
+<p>Tragen Sie ein, wen Sie im Zweifel zurückrufen, und drucken Sie die Karte aus. Legen Sie sie neben das Telefon.</p>
+<div class="card">
+  <div class="reihe">
+    <div><label for="n1">Name</label><input id="n1" placeholder="z. B. Tochter Anna" autocomplete="off"></div>
+    <div><label for="t1">Telefonnummer</label><input id="t1" inputmode="tel" autocomplete="off"></div>
+    <div><label for="n2">Name</label><input id="n2" autocomplete="off"></div>
+    <div><label for="t2">Telefonnummer</label><input id="t2" inputmode="tel" autocomplete="off"></div>
+    <div><label for="n3">Name</label><input id="n3" autocomplete="off"></div>
+    <div><label for="t3">Telefonnummer</label><input id="t3" inputmode="tel" autocomplete="off"></div>
+  </div>
+  <p class="dim">Das Kennwort selbst gehört nicht auf die Karte. Vereinbaren Sie es mündlich in der Familie.</p>
+  <div class="knoepfe"><button type="button" id="drucken">Karte drucken</button></div>
+</div>
+
+<div class="card" id="karte">
+  <h3>Bei verdächtigen Anrufen</h3>
+  <p><strong>1. Auflegen.</strong> <strong>2. Selbst zurückrufen.</strong> <strong>3. Nie Geld übergeben.</strong></p>
+  <p>Die Polizei verlangt nie Geld und ruft nie unter 110 an. Frage nach dem Familien-Kennwort.</p>
+  <table aria-label="Nummern zum Zurückrufen"><tbody id="nummern"></tbody></table>
+  <p><strong>Polizei: 110</strong> (selbst wählen, nicht die Rückruftaste)</p>
+</div>
+
+<h2>Quellen</h2>
+<ul class="dim">
+  <li><a href="https://www.polizei-beratung.de/aktuelles/detailansicht/schockanrufe-panikmache-am-telefon-legen-sie-sofort-auf/">Polizeiliche Kriminalprävention: Schockanrufe</a></li>
+  <li><a href="https://www.polizei-beratung.de/themen-und-tipps/betrug/enkeltrick/">Polizeiliche Kriminalprävention: Enkeltrick</a></li>
+  <li><a href="https://www.polizei-beratung.de/themen-und-tipps/betrug/betrug-durch-falsche-polizisten/">Polizeiliche Kriminalprävention: Falsche Polizisten</a></li>
+  <li><a href="https://www.polizei.bayern.de/schuetzen-und-vorbeugen/senioren/034562/index.html">Bayerische Polizei: Telefonbetrug und Familien-Kennwort</a></li>
+</ul>
+<p class="dim">Diese Seite ist ein privates Übungsangebot und keine Seite der Polizei. Die Gespräche sind erfunden und den Beschreibungen der Polizei nachempfunden.</p>
+
+<script src="szenarien.js"></script>
+<script>
+(() => {
+  const S = window.SZENARIEN, $ = id => document.getElementById(id), buehne = $('buehne');
+  const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+  const kannSprechen = 'speechSynthesis' in window;
+  const still = () => { if (kannSprechen) speechSynthesis.cancel(); };
+  function vorlesen(text) {
+    still();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'de-DE'; u.rate = 0.95;
+    speechSynthesis.speak(u);
+  }
+
+  function auswahl() {
+    still();
+    buehne.replaceChildren();
+    for (const s of S) {
+      const k = el('div', 'card');
+      k.append(el('h3', '', s.titel), el('p', 'dim', `Masche: ${s.masche} · ${s.schritte.length} Schritte`));
+      const b = el('button', '', 'Anruf üben'); b.type = 'button';
+      b.setAttribute('aria-label', `Anruf üben: ${s.titel}`);
+      b.addEventListener('click', () => spielen(s, 0, 0));
+      k.append(b); buehne.append(k);
+    }
+  }
+
+  function spielen(s, nr, richtig) {
+    const schritt = s.schritte[nr];
+    buehne.replaceChildren();
+    const k = el('div', 'card');
+    k.append(el('h3', '', `${s.titel} · Schritt ${nr + 1} von ${s.schritte.length}`));
+    k.append(el('p', 'dim', 'Das Telefon klingelt. Der Anrufer sagt:'));
+    k.append(el('p', 'anruf', schritt.anrufer));
+    if (kannSprechen) {
+      const v = el('button', 'zweit', 'Vorlesen'); v.type = 'button';
+      v.addEventListener('click', () => vorlesen(schritt.anrufer));
+      k.append(v);
+    }
+    k.append(el('p', '', 'Was tun Sie?'));
+    const rueck = el('div'); rueck.tabIndex = -1;
+    const knoepfe = schritt.antworten.map(a => {
+      const b = el('button', 'wahl', a.text); b.type = 'button';
+      b.addEventListener('click', () => {
+        still();
+        knoepfe.forEach((x, i) => { x.disabled = true; if (schritt.antworten[i].gut) x.classList.add('richtig'); });
+        if (!a.gut) b.classList.add('falsch');
+        rueck.replaceChildren(
+          el('p', `urteil ${a.gut ? 'gut' : 'schlecht'}`, a.gut ? 'Gut reagiert.' : 'Das wäre gefährlich gewesen.'),
+          el('p', '', a.erklaerung));
+        if (!a.gut) rueck.append(el('p', 'dim', `Besser: ${schritt.antworten.find(x => x.gut).text}`));
+        const neu = richtig + (a.gut ? 1 : 0), letzter = nr + 1 === s.schritte.length;
+        const weiter = el('button', '', letzter ? 'Auswertung' : 'Weiter'); weiter.type = 'button';
+        weiter.addEventListener('click', () => (letzter ? ende(s, neu) : spielen(s, nr + 1, neu)));
+        const zeile = el('div', 'knoepfe'); zeile.append(weiter); rueck.append(zeile);
+        rueck.focus();
+      });
+      return b;
+    });
+    k.append(...knoepfe, rueck);
+    buehne.append(k);
+    $('ueben-titel').scrollIntoView({ block: 'start' });
+  }
+
+  function ende(s, richtig) {
+    buehne.replaceChildren();
+    const k = el('div', 'card'), alle = richtig === s.schritte.length;
+    k.append(el('h3', '', alle ? 'Sehr gut. Sie haben sich nicht hereinlegen lassen.' : `${richtig} von ${s.schritte.length} richtig. Üben Sie den Anruf ruhig noch einmal.`));
+    k.append(el('p', '', `Merksatz: ${s.merksatz}`));
+    const nochmal = el('button', 'zweit', 'Noch einmal'); nochmal.type = 'button';
+    nochmal.addEventListener('click', () => spielen(s, 0, 0));
+    const zurueck = el('button', '', 'Anderen Anruf üben'); zurueck.type = 'button';
+    zurueck.addEventListener('click', auswahl);
+    const zeile = el('div', 'knoepfe'); zeile.append(zurueck, nochmal);
+    k.append(zeile); buehne.append(k); zurueck.focus();
+  }
+
+  // Die Karte wird nur im Speicher der Seite zusammengesetzt und nirgends gespeichert.
+  function karte() {
+    const zeilen = [1, 2, 3].map(i => [$(`n${i}`).value.trim(), $(`t${i}`).value.trim()]).filter(([n, t]) => n || t);
+    const leer = [['', ''], ['', '']];
+    $('nummern').replaceChildren(...(zeilen.length ? zeilen : leer).map(([n, t]) => {
+      const tr = el('tr'); tr.append(el('td', '', n || ' '), el('td', '', t)); return tr;
+    }));
+  }
+  for (const i of [1, 2, 3]) for (const p of ['n', 't']) $(p + i).addEventListener('input', karte);
+  $('drucken').addEventListener('click', () => { karte(); window.print(); });
+
+  karte();
+  auswahl();
+})();
+</script>
+</body>
+</html>
